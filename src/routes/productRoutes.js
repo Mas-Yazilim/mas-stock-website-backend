@@ -216,7 +216,8 @@ router.post('/', authenticateToken, [
   body('accessories.*.name').optional().notEmpty().trim().withMessage('Aksesuar adı gereklidir'),
   body('accessories.*.price').optional().isNumeric().withMessage('Aksesuar fiyatı sayısal olmalıdır'),
   body('cashPrice').isNumeric().withMessage('Nakit fiyat sayısal olmalıdır'),
-  body('visaPrice').isNumeric().withMessage('Visa fiyat sayısal olmalıdır')
+  body('visaPrice').isNumeric().withMessage('Visa fiyat sayısal olmalıdır'),
+  body('installmentOptions').optional().isArray().withMessage('Taksit seçenekleri dizi formatında olmalıdır')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -232,8 +233,15 @@ router.post('/', authenticateToken, [
       createdBy: req.admin._id
     };
 
+    console.log('📦 Creating product with data:', {
+      name: productData.name,
+      installmentOptions: productData.installmentOptions
+    });
+
     const product = new Product(productData);
     await product.save();
+
+    console.log('✅ Product saved with installmentOptions:', product.installmentOptions);
 
     await product.populate('createdBy', 'name email');
 
@@ -271,7 +279,8 @@ router.put('/:id', authenticateToken, [
   body('accessories.*.name').optional().notEmpty().trim().withMessage('Aksesuar adı gereklidir'),
   body('accessories.*.price').optional().isNumeric().withMessage('Aksesuar fiyatı sayısal olmalıdır'),
   body('cashPrice').optional().isNumeric().withMessage('Nakit fiyat sayısal olmalıdır'),
-  body('visaPrice').optional().isNumeric().withMessage('Visa fiyat sayısal olmalıdır')
+  body('visaPrice').optional().isNumeric().withMessage('Visa fiyat sayısal olmalıdır'),
+  body('installmentOptions').optional().isArray().withMessage('Taksit seçenekleri dizi formatında olmalıdır')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
