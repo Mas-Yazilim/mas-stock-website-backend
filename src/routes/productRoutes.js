@@ -300,8 +300,10 @@ router.put('/:id', authenticateToken, [
     }
 
     // Ürünü güncelle
+    console.log('📝 Updating product with installmentOptions:', req.body.installmentOptions);
     Object.assign(product, req.body);
     await product.save();
+    console.log('✅ Product updated with installmentOptions:', product.installmentOptions);
 
     await product.populate('createdBy', 'name email');
 
