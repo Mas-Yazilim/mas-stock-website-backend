@@ -65,6 +65,16 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Visa fiyat gereklidir'],
     min: [0, 'Fiyat negatif olamaz']
   },
+  installmentOptions: {
+    type: [Number],
+    default: [],
+    validate: {
+      validator: function(options) {
+        return options.every(opt => opt > 0 && Number.isInteger(opt));
+      },
+      message: 'Taksit seçenekleri pozitif tam sayı olmalıdır'
+    }
+  },
   isActive: {
     type: Boolean,
     default: true
